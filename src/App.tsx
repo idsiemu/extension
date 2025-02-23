@@ -1,74 +1,40 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
 import "./App.css";
 
-interface ElementInfo {
-  tagName: string;
-  className: string;
-  id: string;
-  text: string | null;
-  attributes: Array<{ name: string; value: string }>;
-}
-
 function App() {
-  const [isInspectorActive, setIsInspectorActive] = useState(false);
-  const [elementInfo, setElementInfo] = useState<ElementInfo | null>(null);
+  const [count, setCount] = useState(0);
+  const onAddMouseEvent = async () => {
+    console.log(11);
+    chrome.runtime.sendMessage({ action: "toggleIframeLayer", data: { flag: true } });
 
-  useEffect(() => {
-    console.log("A. App component mounted");
-
-    const messageListener = (message: any) => {
-      console.log("B. Message received in App:", message);
-      if (message.type === "ELEMENT_INFO") {
-        console.log("C. Setting element info:", message.data);
-        setElementInfo(message.data);
-      }
-    };
-
-    chrome.runtime.onMessage.addListener(messageListener);
-    console.log("D. Message listener added");
-
-    return () => {
-      console.log("E. Cleanup: removing message listener");
-      chrome.runtime.onMessage.removeListener(messageListener);
-    };
-  }, []);
-
-  const toggleInspector = async () => {
-    console.log("F. Toggle inspector clicked");
-    const newState = !isInspectorActive;
-    setIsInspectorActive(newState);
-
-    try {
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      console.log("G. Current tab:", tab);
-
-      if (tab.id) {
-        console.log("H. Sending toggle message to content script");
-        await chrome.tabs.sendMessage(tab.id, {
-          type: "TOGGLE_INSPECTOR",
-          active: newState,
-        });
-        console.log("I. Toggle message sent successfully");
-      }
-    } catch (error) {
-      console.error("J. Error in toggleInspector:", error);
-    }
+    // 윈도우 종료
+    // setTimeout(() => {
+    //   window.close();
+    // }, 100);
   };
 
   return (
-    <div className="inspector-container">
-      <h2>DOM Inspector</h2>
-      <button onClick={toggleInspector} className={`toggle-button ${isInspectorActive ? "active" : ""}`}>
-        {isInspectorActive ? "인스펙터 중지" : "인스펙터 시작"}
-      </button>
-
-      {elementInfo && (
-        <div className="element-info">
-          <h3>선택된 요소 정보:</h3>
-          <pre>{JSON.stringify(elementInfo, null, 2)}</pre>
-        </div>
-      )}
-    </div>
+    <>
+      <div>
+        <a href="https://vite.dev" target="_blank">
+          <img src={viteLogo} className="logo" alt="Vite logo" />
+        </a>
+        <a href="https://react.dev" target="_blank">
+          <img src={reactLogo} className="logo react" alt="React logo" />
+        </a>
+      </div>
+      <h1>Vite + React</h1>
+      <div className="card">
+        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
+        <p>
+          Edit <code>src/App.tsx</code> and save to test HMR
+        </p>
+      </div>
+      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
+      <button onClick={onAddMouseEvent}>Show Iframe Layer</button>
+    </>
   );
 }
 

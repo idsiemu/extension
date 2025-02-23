@@ -1,22 +1,30 @@
 {
   "manifest_version": 3,
-  "name": "My Chrome Extension",
+  "name": "My React Extension",
   "version": "1.0.0",
-  "description": "Chrome Extension with React + TypeScript",
   "action": {
     "default_popup": "index.html"
   },
-  "permissions": ["activeTab", "scripting", "tabs"],
-  "host_permissions": ["<all_urls>"],
-  "content_scripts": [
+  "permissions": ["storage", "tabs", "activeTab"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "run_at": "document_idle"
+      "resources": ["*.html", "*.css", "*.js", "*.json", "*.png", "*.jpg", "*.gif", "*.svg", "*.woff", "*.woff2", "*.ttf", "*.eot", "*.otf"],
+      "matches": ["*://*/*"]
     }
   ],
-  "background": {
-    "service_worker": "background.js",
-    "type": "module"
-  }
+  "host_permissions": ["<all_urls>"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'",
+    "sandbox": "sandbox allow-scripts; script-src 'self' 'unsafe-eval' 'https://fonts.googleapis.com/' 'https://use.fontawesome.com/' 'https://fonts.gstatic.com/'; object-src 'self'"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["contents.js"],
+      "all_frames": false
+    }
+  ]
 }
