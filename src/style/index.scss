@@ -1,0 +1,164 @@
+@use './variables.scss' as *;
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+body {
+  margin: 0;
+  width: 400px;
+  height: 600px;
+}
+
+.container {
+  position: relative;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  .header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+
+    h1 {
+      font-size: 22px;
+      font-weight: bold;
+      margin: 0;
+    }
+  }
+
+  .action-button {
+    position: absolute;
+    top: 20;
+    left: 0;
+    background-color: transparent;
+    border: none;
+  }
+
+  .close-button {
+    position: absolute;
+    top: 20;
+    right: 0;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .input-box {
+      height: 40px;
+      padding: 0 10px;
+      border: 1px solid $grey-400; // 테두리 추가
+      border-radius: 4px; // 모서리 둥글게
+      background-color: $grey-100; // 배경색 추가
+      transition: border-color 0.3s; // 테두리 색상 전환 효과
+      width: 100%;
+      box-sizing: border-box; // 박스 모델 설정
+
+      &:focus {
+        border-color: $grey-600; // 포커스 시 테두리 색상 변경
+        outline: none;
+      }
+    }
+
+    .select-button {
+      margin-right: 10px;
+      padding: 8px; // 패딩 추가
+      border: 1px solid $grey-400; // 테두리 추가
+      border-radius: 4px; // 모서리 둥글게
+      background-color: $grey-100; // 배경색 추가
+      transition: border-color 0.3s; // 테두리 색상 전환 효과
+      cursor: pointer; // 커서 포인터로 변경
+      line-height: 1.5; // 라인 높이 추가
+
+      &:hover {
+        border-color: $grey-600; // 호버 시 테두리 색상 변경
+      }
+
+      &:focus {
+        border-color: $grey-600; // 포커스 시 테두리 색상 변경
+        outline: none; // 포커스 시 아웃라인 제거
+      }
+    }
+  }
+
+  .scroll-top-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: $grey-900;
+    color: white;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: background-color 0.3s, opacity 0.3s, visibility 0.3s;
+    opacity: 0;
+    visibility: hidden;
+
+    &.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    &:hover {
+      background-color: $grey-700;
+    }
+  }
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background-color: $grey-100;
+  z-index: 10;
+}
+
+
+.common-button {
+  height: 40px;
+  border-radius: 4px; // 모서리 둥글게
+  background-color: $grey-900; // 배경색 추가
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.company-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.company-table th,
+.company-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid $grey-400;
+}
+
+.company-table th {
+  font-weight: 500;
+  color: $grey-700;
+  background-color: $grey-300;
+}
+
+.company-table tr:hover {
+  cursor: pointer;
+  background-color: $grey-300;
+}

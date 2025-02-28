@@ -1,0 +1,76 @@
+@use './variables.scss' as *;
+
+.company-url {
+  padding-bottom: 40px;
+
+  .info-row {
+    display: flex;
+    padding: 12px 0;
+    border-bottom: 1px solid $grey-400;
+
+    .info-label {
+      width: 120px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .info-value {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .divider {
+    height: 8px;
+    background-color: $grey-300;
+    margin: 16px -16px;
+  }
+
+  .button-container {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .tag-button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background-color: $grey-800;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    gap: 8px;
+
+    &:hover {
+      background-color: $grey-700;
+    }
+  }
+
+  .loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .tag-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}

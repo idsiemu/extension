@@ -3,27 +3,54 @@
   "name": "My React Extension",
   "version": "1.0.0",
   "action": {
-    "default_popup": "index.html"
+    "default_popup": "/src/main.html"
   },
-  "permissions": ["storage", "tabs", "activeTab"],
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "scripting"
+  ],
   "background": {
     "service_worker": "background.js"
   },
   "web_accessible_resources": [
     {
-      "resources": ["*.html", "*.css", "*.js", "*.json", "*.png", "*.jpg", "*.gif", "*.svg", "*.woff", "*.woff2", "*.ttf", "*.eot", "*.otf"],
-      "matches": ["*://*/*"]
+      "resources": [
+        "*.html",
+        "*.css",
+        "*.js",
+        "*.json",
+        "*.png",
+        "*.jpg",
+        "*.gif",
+        "*.svg",
+        "*.woff",
+        "*.woff2",
+        "*.ttf",
+        "*.eot",
+        "*.otf"
+      ],
+      "matches": [
+        "*://*/*"
+      ]
     }
   ],
-  "host_permissions": ["<all_urls>"],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'",
     "sandbox": "sandbox allow-scripts; script-src 'self' 'unsafe-eval' 'https://fonts.googleapis.com/' 'https://use.fontawesome.com/' 'https://fonts.gstatic.com/'; object-src 'self'"
   },
   "content_scripts": [
     {
-      "matches": ["*://*/*"],
-      "js": ["contents.js"],
+      "matches": [
+        "*://*/*"
+      ],
+      "js": [
+        "contents.js"
+      ],
       "all_frames": false
     }
   ]

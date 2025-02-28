@@ -1,0 +1,82 @@
+@use './variables.scss' as *;
+
+.company-detail {
+  padding-bottom: 40px;
+
+  .info-row {
+    display: flex;
+    padding: 12px 0;
+    border-bottom: 1px solid $grey-400;
+
+    .info-label {
+      width: 120px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .info-value {
+      flex: 1;
+    }
+  }
+
+  .divider {
+    height: 8px;
+    background-color: $grey-300;
+    margin: 16px -16px;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 16px 0;
+  }
+
+  .url-table {
+    border: 1px solid $grey-400;
+
+    .table-header {
+      display: flex;
+      background-color: $grey-300;
+      font-weight: 500;
+      padding: 12px 8px;
+    }
+
+    .table-row {
+      display: flex;
+      padding: 12px 8px;
+      border-top: 1px solid $grey-400;
+    }
+
+    .table-cell {
+      &:nth-child(1) {
+        width: 80px;
+      }
+
+      &:nth-child(2) {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      &:nth-child(3) {
+        width: 100px;
+      }
+
+      &:nth-child(4) {
+        width: 40px;
+        text-align: center;
+      }
+    }
+
+    .edit-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: $grey-600;
+
+      &:hover {
+        color: $grey-900;
+      }
+    }
+  }
+}
