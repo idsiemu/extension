@@ -8,8 +8,8 @@
 
 body {
   margin: 0;
-  width: 400px;
-  height: 600px;
+  // width: 400px;
+  // height: 600px;
 }
 
 .container {
@@ -133,32 +133,80 @@ body {
 
 .common-button {
   height: 40px;
-  border-radius: 4px; // 모서리 둥글게
-  background-color: $grey-900; // 배경색 추가
+  border-radius: 4px;
+  background-color: $grey-900;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.company-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.company-table th,
-.company-table td {
-  padding: 12px 16px;
-  text-align: left;
-  border-bottom: 1px solid $grey-400;
-}
-
-.company-table th {
-  font-weight: 500;
-  color: $grey-700;
-  background-color: $grey-300;
-}
-
-.company-table tr:hover {
+  color: white;
   cursor: pointer;
-  background-color: $grey-300;
+
+  &:disabled {
+    background-color: $grey-500;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}
+
+.transform-section {
+  margin-top: 12px;
+}
+
+.radio-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.radio-label {
+  font-size: 14px;
+  margin-right: 16px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+  cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  width: 20px;
+  height: 20px;
+  border: 2px solid $grey-900;
+  border-radius: 50%;
+  margin-right: 8px;
+  position: relative;
+  cursor: pointer;
+}
+
+.radio-option input[type="radio"]:checked {
+  border-color: $grey-900;
+}
+
+.radio-option input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  background-color: $grey-900;
+  border-radius: 50%;
+}
+
+.radio-option input[type="radio"]:focus {
+  outline: none;
+}
+
+.transform-note {
+  font-size: 14px;
+  color: $grey-700;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }

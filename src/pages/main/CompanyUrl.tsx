@@ -48,7 +48,7 @@ const CompanyUrl = () => {
         const listener = (updatedTabId: number, changeInfo: chrome.tabs.TabChangeInfo, _tab: chrome.tabs.Tab) => {
           if (updatedTabId === tabId && changeInfo.status === 'complete') {
             setLoadingList(false)
-            chrome.runtime.sendMessage({ action: "toggleIframeLayer", data: { flag: true } });
+            chrome.runtime.sendMessage({ action: "toggleIframeLayer", data: { flag: true, type: "list" } });
             chrome.tabs.onUpdated.removeListener(listener);
 
             setTimeout(() => {
@@ -85,10 +85,12 @@ const CompanyUrl = () => {
             }, (response) => {
               setLoadingDetail(false);
               if (response.success) {
-                chrome.runtime.sendMessage({ action: "toggleIframeLayer", data: { flag: true } });
+                chrome.runtime.sendMessage({ action: "toggleIframeLayer", data: { flag: true, type: "detail" } });
                 setTimeout(() => {
                   window.close();
                 }, 100);
+              } else {
+                alert(response.error);
               }
             });
 

@@ -1,0 +1,24 @@
+@use './variables.scss' as *;
+
+.company-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.company-table th,
+.company-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid $grey-400;
+}
+
+.company-table th {
+  font-weight: 500;
+  color: $grey-700;
+  background-color: $grey-300;
+}
+
+.company-table tr:hover {
+  cursor: pointer;
+  background-color: $grey-300;
+}

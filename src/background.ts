@@ -1,8 +1,8 @@
-const sendMessageToActiveTab = (action: string, sendResponse: any) => {
+const sendMessageToActiveTab = ({ action, data, sendResponse }: { action: string, data?: any, sendResponse: any }) => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const activeTab = tabs[0];
     if (activeTab && activeTab.id) {
-      chrome.tabs.sendMessage(activeTab.id, { action }, (response) => {
+      chrome.tabs.sendMessage(activeTab.id, { action, data }, (response) => {
         if (chrome.runtime.lastError) console.log(chrome.runtime.lastError);
         sendResponse({ result: "success", response });
       });
@@ -38,7 +38,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       break;
     case "toggleIframeLayer":
       const action = data.flag ? "showIframeLayer" : "hideIframeLayer";
-      sendMessageToActiveTab(action, sendResponse);
+      sendMessageToActiveTab({ action, data: data.type, sendResponse });
       break;
     case "linkClicked":
       const clickedTabId = data.tabId;
@@ -48,16 +48,19 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
           chrome.tabs.onUpdated.removeListener(tabUpdateListener);
         }
       };
-
       chrome.tabs.onUpdated.addListener(tabUpdateListener);
       chrome.scripting.executeScript({
         target: { tabId: data.tabId },
         func: (selector: string) => {
           const element = document.querySelector(selector);
           if (element) {
-            const href = (element as HTMLAnchorElement).href;
-            if (href) {
-              window.location.href = href;
+            if (element instanceof HTMLAnchorElement && element.href) {
+              window.location.href = element.href;
+              return true;
+            }
+            const anchorInside = element.querySelector('a');
+            if (anchorInside && anchorInside.href) {
+              window.location.href = anchorInside.href;
               return true;
             }
             (element as HTMLElement).click();
@@ -65,31 +68,16 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
           return false;
         },
         args: [data.selector]
+      }).then(response => {
+        if (!response[0].result) {
+          setTimeout(() => {
+            chrome.tabs.onUpdated.removeListener(tabUpdateListener);
+            sendResponse({ success: false, error: "클릭 후 페이지 변경이 감지되지 않았습니다. 클릭 이벤트가 없는 엘리먼트일 수 있습니다." });
+          }, 3000);
+        }
       }).catch(error => {
         chrome.tabs.onUpdated.removeListener(tabUpdateListener);
         sendResponse({ success: false, error: error.message });
-      });
-      break;
-    // case "elementClicked":
-    //   console.log(data);
-    //   const elementData = message.data;
-    //   // 데이터를 React 컴포넌트로 전달
-    //   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    //     if (tabs[0].id) {
-    //       chrome.tabs.sendMessage(tabs[0].id, { action: 'renderElement', data: elementData });
-    //     }
-    //   });
-    //   break;
-    case "FROM_PAGE":
-      const { key, value } = data;
-      chrome.storage.local.set({ [key]: value }, () => {
-        console.log(`Value saved: ${key} = ${value}`);
-      });
-      break;
-    case "GET_DATA":
-      console.log(data);
-      chrome.storage.local.get([data.key], (result) => {
-        sendResponse(result[data.key]);
       });
       break;
   }

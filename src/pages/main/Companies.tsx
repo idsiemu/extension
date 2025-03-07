@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import CancelIcon from '@assets/icons/cancel.svg?react';
 import SearchIcon from '@assets/icons/search.svg?react';
 import "src/style/index.scss";
+import "src/style/companies.scss";
 import Row from "src/components/Row";
 import { axiosApiInstance } from "src/core/axiosInstance";
 import useInfinityScroll from "src/hooks/useInfinityScroll";
@@ -20,15 +21,6 @@ const Companies = () => {
   const [trigger, setTrigger] = useState(0)
   const target = useRef<HTMLTableRowElement>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
-
-  // const onAddMouseEvent = async () => {
-  //   chrome.runtime.sendMessage({ action: "toggleIframeLayer", data: { flag: true } });
-
-  //   // 윈도우 종료
-  //   setTimeout(() => {
-  //     window.close();
-  //   }, 100);
-  // };
 
   const handleChangeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value)
@@ -135,8 +127,6 @@ const Companies = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  console.log(showScrollTop)
 
   return (
     <div className="container">

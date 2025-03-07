@@ -50,7 +50,7 @@ export default class HtmlParser {
     // 최상위 클래스 요소를 추출해서 하위 데이터를 분석하도록 정리
     let elems: NodeListOf<Element> | null = null;
     let rootClass = null;
-    if (selected.length > 1) { 
+    if (selected.length > 1) {
       try {
         commonXPath = this.findCommonXPath(selected.map(item => item.xpath));
         rootClass = this.extractLastClassName(commonXPath);
@@ -72,7 +72,7 @@ export default class HtmlParser {
 
       // 선택된 요소가 2개 이상인 경우에는 xpath로 찾음
       if (selected.length > 1) {
-        const currentXClass= item.xpath.replace(commonXPath, '');
+        const currentXClass = item.xpath.replace(commonXPath, '');
         elements = this.findElementsByPartialClass(currentXClass, elems);
       }
       else elements = this.findElementsByPartialClass(item.classname, elems);
@@ -117,11 +117,11 @@ export default class HtmlParser {
         }
       }
       const tagName = element.tagName.toLowerCase();
-      const idSelector = element.id ? `[@id="${ element.id }"]` : null;
-      const pathIndex = (index && !element.id ? `[${ index + 1 }]` : '');
-      paths.unshift(`${tagName}${idSelector??''}${pathIndex}`);
+      const idSelector = element.id ? `[@id="${element.id}"]` : null;
+      const pathIndex = (index && !element.id ? `[${index + 1}]` : '');
+      paths.unshift(`${tagName}${idSelector ?? ''}${pathIndex}`);
     }
-    return paths.length ? `/${ paths.join('/') }` : '';
+    return paths.length ? `/${paths.join('/')}` : '';
   }
 
   public getXPath(element: Element) {
@@ -132,19 +132,61 @@ export default class HtmlParser {
         if (sibling.nodeType === Node.ELEMENT_NODE && sibling.nodeName === element.nodeName) index++;
       }
       const tagName = element.nodeName.toLowerCase();
-      const idSelector = element.id ? `[@id="${ element.id }"]` : null; // id가 있는 경우 XPath에 추가
+      const idSelector = element.id ? `[@id="${element.id}"]` : null; // id가 있는 경우 XPath에 추가
       const className = this.getRealClassname(element.className);
-      const classSelector = className === null ? '' : `[@class="${ className }"]`; // 클래스 이름을 XPath에 추가
-      const pathIndex = (index ? `[${ index + 1 }]` : '');
-      paths.unshift(`${tagName}${idSelector??classSelector}${pathIndex}`);
+      const classSelector = className === null ? '' : `[@class="${className}"]`; // 클래스 이름을 XPath에 추가
+      const pathIndex = (index ? `[${index + 1}]` : '');
+      paths.unshift(`${tagName}${idSelector ?? classSelector}${pathIndex}`);
     }
-    return paths.length ? `/${ paths.join('/') }` : '';
+    return paths.length ? `/${paths.join('/')}` : '';
+  }
+
+  public getCssSelectorPath(element: Element): string {
+    const paths = [];
+    let currentElement: Element | null = element;
+    let foundId = false;
+
+    while (currentElement && currentElement.nodeType === Node.ELEMENT_NODE) {
+      const tagName = currentElement.nodeName.toLowerCase();
+
+      // ID가 있는 경우
+      if (currentElement.id) {
+        paths.unshift(`#${currentElement.id}`);
+        foundId = true;
+        break; // ID를 찾았으면 중단
+      }
+
+      // 클래스가 있는 경우
+      let selector = tagName;
+      if (currentElement.className && typeof currentElement.className === 'string') {
+        const classNames = currentElement.className.trim();
+        if (classNames) {
+          // 첫 번째 클래스만 사용 (선택적)
+          const firstClass = classNames.split(/\s+/)[0];
+          selector += `.${firstClass}`;
+        }
+      }
+
+      paths.unshift(selector);
+      currentElement = currentElement.parentElement;
+    }
+
+    // ID를 찾지 못했고 html까지 도달하지 않았다면 html까지 계속 올라감
+    if (!foundId && currentElement) {
+      while (currentElement && currentElement.nodeType === Node.ELEMENT_NODE) {
+        const tagName = currentElement.nodeName.toLowerCase();
+        paths.unshift(tagName);
+        currentElement = currentElement.parentElement;
+      }
+    }
+
+    return paths.join(' > ');
   }
 
   private findCommonXPath(xpaths: string[]): string {
     const splitXPaths = xpaths.map(xpath => xpath.split('/'));
     let commonXPath = splitXPaths[0];
-  
+
     let minPos = 10000;
     for (let i = 1; i < splitXPaths.length; i++) {
       let j = 0;
@@ -152,7 +194,7 @@ export default class HtmlParser {
       if (j < minPos) minPos = j;
       commonXPath = commonXPath.slice(0, minPos);
     }
-  
+
     return commonXPath.join('/');
   }
 
@@ -264,7 +306,7 @@ export default class HtmlParser {
               }
             }
           });
-          
+
           // 하위 요소에 class가 없는 경우 빈값으로 대체
           if (!addFlag) {
             const element = document.createElement('div');
@@ -275,7 +317,7 @@ export default class HtmlParser {
       }
     }
     catch (e) {
-      console.log('findElementsByPartialClass error:', e); 
+      console.log('findElementsByPartialClass error:', e);
     }
 
     return elements;
