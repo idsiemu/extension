@@ -1,7 +1,7 @@
-import "src/style/index.scss";
-import HtmlParser from "./libs/htmlparser";
+import 'src/style/index.scss';
+import HtmlParser from './libs/htmlparser';
 
-const layerIframeWork = "becu-iframe-popup";
+const layerIframeWork = 'becu-iframe-popup';
 
 let parser = new HtmlParser();
 
@@ -10,57 +10,57 @@ let unwantedTagName: string | undefined;
 const unwantedTagNameSet = new Set<string>();
 
 const showIframeLayer = async (extractType: string | undefined) => {
-  chrome.storage.local.set({ 'extractType': extractType });
+  chrome.storage.local.set({ extractType: extractType });
   const appElement = document.querySelector(`#${layerIframeWork}`);
   let iframe;
 
-  if (appElement) iframe = appElement.querySelector("iframe");
+  if (appElement) iframe = appElement.querySelector('iframe');
   else {
-    const newAppElement = document.createElement("div");
-    newAppElement.style.position = "fixed";
-    newAppElement.style.top = "100px";
-    newAppElement.style.right = "100px";
-    newAppElement.style.width = "420px";
-    newAppElement.style.minHeight = "400px";
-    newAppElement.style.display = "inline-block";
-    newAppElement.style.margin = "0";
-    newAppElement.style.padding = "0";
-    newAppElement.style.border = "1px solid #e4e6fe";
-    newAppElement.style.backgroundColor = "white";
-    newAppElement.style.zIndex = "9999999";
+    const newAppElement = document.createElement('div');
+    newAppElement.style.position = 'fixed';
+    newAppElement.style.top = '100px';
+    newAppElement.style.right = '100px';
+    newAppElement.style.width = '420px';
+    newAppElement.style.minHeight = '400px';
+    newAppElement.style.display = 'inline-block';
+    newAppElement.style.margin = '0';
+    newAppElement.style.padding = '0';
+    newAppElement.style.border = '1px solid #e4e6fe';
+    newAppElement.style.backgroundColor = 'white';
+    newAppElement.style.zIndex = '9999999';
     newAppElement.id = layerIframeWork;
 
-    iframe = document.createElement("iframe");
-    iframe.style.width = "100%";
-    iframe.style.height = "530px";
-    iframe.style.border = "none";
-    iframe.style.overflowX = "hidden";
-    iframe.style.overflowY = "auto";
-    iframe.src = chrome.runtime.getURL("/src/preview.html");
+    iframe = document.createElement('iframe');
+    iframe.style.width = '100%';
+    iframe.style.height = '530px';
+    iframe.style.border = 'none';
+    iframe.style.overflowX = 'hidden';
+    iframe.style.overflowY = 'auto';
+    iframe.src = chrome.runtime.getURL('/src/preview.html');
 
     newAppElement.appendChild(iframe);
     document.body.appendChild(newAppElement);
   }
 
   if (iframe && iframe.contentWindow) {
-    iframe.contentWindow.postMessage({}, "*");
+    iframe.contentWindow.postMessage({}, '*');
   } else {
-    console.error("iframe or iframe.contentWindow is null");
+    console.error('iframe or iframe.contentWindow is null');
   }
 };
 
 const hideIframeLayer = () => {
   currentMode = undefined;
-  chrome.storage.local.set({ 'extractType': undefined });
+  chrome.storage.local.set({ extractType: undefined });
   let hiding = true;
   while (hiding) {
     const element = document.querySelector(`#${layerIframeWork}`);
     if (element) element.remove();
     else hiding = false;
   }
-}
+};
 
-document.addEventListener('mouseover', (event) => {
+document.addEventListener('mouseover', event => {
   if (currentMode === 'extract') {
     const target = event.target as HTMLElement;
     if (target.closest(`#${layerIframeWork}`)) return;
@@ -78,7 +78,7 @@ document.addEventListener('mouseover', (event) => {
   }
 });
 
-document.addEventListener('mouseout', (event) => {
+document.addEventListener('mouseout', event => {
   if (currentMode === 'extract') {
     const target = event.target as HTMLElement;
     if (target.closest(`#${layerIframeWork}`)) return;
@@ -106,7 +106,7 @@ document.addEventListener('mouseout', (event) => {
   }
 });
 
-document.addEventListener('click', async (event) => {
+document.addEventListener('click', async event => {
   if (currentMode === 'extract') {
     event.preventDefault();
     const target = event.target as HTMLElement;
@@ -119,27 +119,30 @@ document.addEventListener('click', async (event) => {
 
     const appElement = document.querySelector(`#${layerIframeWork}`) as HTMLElement;
     if (appElement) {
-      appElement.style.width = "420px";
-      appElement.style.height = "auto";
-      appElement.style.minHeight = "400px";
+      appElement.style.width = '420px';
+      appElement.style.height = 'auto';
+      appElement.style.minHeight = '400px';
       appElement.style.border = '1px solid #e4e6fe';
       appElement.style.backgroundColor = 'white';
       appElement.style.borderRadius = '0px';
       appElement.style.cssText += 'box-shadow: none;';
       const iframe = appElement.querySelector('iframe') as HTMLIFrameElement;
       if (iframe) {
-        iframe.style.height = "530px";
+        iframe.style.height = '530px';
       }
     }
     const iframe = appElement.querySelector('iframe') as HTMLIFrameElement;
     if (iframe && iframe.contentWindow) {
-      iframe.contentWindow.postMessage({
-        action: 'ELEMENT_SELECTED',
-        data: {
-          selector: selector,
-          hasAnchorTags: anchorTags.length > 0 || target.tagName.toLowerCase() === 'a'
-        }
-      }, '*');
+      iframe.contentWindow.postMessage(
+        {
+          action: 'ELEMENT_SELECTED',
+          data: {
+            selector: selector,
+            hasAnchorTags: anchorTags.length > 0 || target.tagName.toLowerCase() === 'a',
+          },
+        },
+        '*',
+      );
     }
 
     currentMode = undefined;
@@ -175,12 +178,17 @@ document.addEventListener('click', async (event) => {
           unwantedTagNameSet.add(selector);
         }
 
-        const iframeElement = document.querySelector(`#${layerIframeWork} iframe`) as HTMLIFrameElement;
+        const iframeElement = document.querySelector(
+          `#${layerIframeWork} iframe`,
+        ) as HTMLIFrameElement;
         if (iframeElement && iframeElement.contentWindow) {
-          iframeElement.contentWindow.postMessage({
-            action: 'UNWANTED_ELEMENT_SELECTED',
-            data: Array.from(unwantedTagNameSet).join(',')
-          }, '*');
+          iframeElement.contentWindow.postMessage(
+            {
+              action: 'UNWANTED_ELEMENT_SELECTED',
+              data: Array.from(unwantedTagNameSet).join(','),
+            },
+            '*',
+          );
         }
       }
     }
@@ -189,48 +197,67 @@ document.addEventListener('click', async (event) => {
 
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   switch (request.action) {
-    case "showIframeLayer":
+    case 'showIframeLayer':
       showIframeLayer(request.data);
       break;
     case 'hideIframeLayer':
       hideIframeLayer();
       break;
+    case 'FIND_ELEMENT':
+      const targets = request.data.targets;
+      const targetElements = document.querySelectorAll(targets);
+      const textList: { text: string }[] = [];
+      targetElements.forEach((targetElement: Element) => {
+        const childTargets = request.data.childTargets;
+        childTargets.split(',').forEach((childTarget: string) => {
+          const childTargetElement = targetElement.querySelector(childTarget);
+          if (childTargetElement) {
+            const text = (childTargetElement as HTMLElement).innerText.trim();
+            textList.push({ text });
+          }
+        });
+      });
+      console.log(textList);
+      chrome.runtime.sendMessage({
+        action: 'COLLECTED_DATA',
+        data: textList,
+      });
+      break;
   }
-  sendResponse({ result: "success" });
+  sendResponse({ result: 'success' });
   return true;
 });
 
-
-window.addEventListener('message', (event) => {
+window.addEventListener('message', event => {
   if (event.data.action === 'EXTRACT_START') {
     const appElement = document.querySelector(`#${layerIframeWork}`) as HTMLElement | null;
     if (appElement) {
-      appElement.style.width = "80px";
-      appElement.style.height = "44px";
-      appElement.style.minHeight = "44px";
+      appElement.style.width = '80px';
+      appElement.style.height = '44px';
+      appElement.style.minHeight = '44px';
       appElement.style.border = 'none';
       appElement.style.backgroundColor = 'transparent';
       appElement.style.borderRadius = '4px';
       appElement.style.cssText += 'box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);';
       const iframe = appElement.querySelector('iframe') as HTMLIFrameElement;
       if (iframe) {
-        iframe.style.height = "100%";
+        iframe.style.height = '100%';
       }
     }
     currentMode = 'extract';
   } else if (event.data.action === 'EXTRACT_UNWANTED') {
     const appElement = document.querySelector(`#${layerIframeWork}`) as HTMLElement | null;
     if (appElement) {
-      appElement.style.width = "600px";
-      appElement.style.height = "44px";
-      appElement.style.minHeight = "44px";
+      appElement.style.width = '600px';
+      appElement.style.height = '44px';
+      appElement.style.minHeight = '44px';
       appElement.style.border = 'none';
       appElement.style.backgroundColor = 'transparent';
       appElement.style.borderRadius = '4px';
       appElement.style.cssText += 'box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);';
       const iframe = appElement.querySelector('iframe') as HTMLIFrameElement;
       if (iframe) {
-        iframe.style.height = "100%";
+        iframe.style.height = '100%';
       }
     }
     // 선택된 요소 가져오기
@@ -280,16 +307,16 @@ window.addEventListener('message', (event) => {
   } else if (event.data.action === 'EXTRACT_UNWANTED_DONE') {
     const appElement = document.querySelector(`#${layerIframeWork}`) as HTMLElement | null;
     if (appElement) {
-      appElement.style.width = "420px";
-      appElement.style.height = "auto";
-      appElement.style.minHeight = "400px";
+      appElement.style.width = '420px';
+      appElement.style.height = 'auto';
+      appElement.style.minHeight = '400px';
       appElement.style.border = '1px solid #e4e6fe';
       appElement.style.backgroundColor = 'white';
       appElement.style.borderRadius = '0px';
       appElement.style.cssText += 'box-shadow: none;';
       const iframe = appElement.querySelector('iframe') as HTMLIFrameElement;
       if (iframe) {
-        iframe.style.height = "530px";
+        iframe.style.height = '530px';
       }
     }
     const targetElement = document.querySelector(`${unwantedTagName}`) as HTMLElement | null;
@@ -321,16 +348,16 @@ window.addEventListener('message', (event) => {
   } else if (event.data.action === 'EXTRACT_CANCEL') {
     const appElement = document.querySelector(`#${layerIframeWork}`) as HTMLElement | null;
     if (appElement) {
-      appElement.style.width = "420px";
-      appElement.style.height = "auto";
-      appElement.style.minHeight = "400px";
+      appElement.style.width = '420px';
+      appElement.style.height = 'auto';
+      appElement.style.minHeight = '400px';
       appElement.style.border = '1px solid #e4e6fe';
       appElement.style.backgroundColor = 'white';
       appElement.style.borderRadius = '0px';
       appElement.style.cssText += 'box-shadow: none;';
       const iframe = appElement.querySelector('iframe') as HTMLIFrameElement;
       if (iframe) {
-        iframe.style.height = "530px";
+        iframe.style.height = '530px';
       }
     }
     currentMode = undefined;
